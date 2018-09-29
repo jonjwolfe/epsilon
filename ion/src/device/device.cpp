@@ -29,15 +29,21 @@ volatile uint32_t sTicks = 0;
 }
 // Public Ion methods
 
-/* TODO: The delay methods 'msleep' and 'usleep' are currently dependent on the
- * optimizations chosen by the compiler. To prevent that and to gain in
- * precision, we could use the controller cycle counter (Systick). */
+
 
 void Ion::msleep(long ms) {
-  for (volatile long i=0; i<8852*ms; i++) {
-      __asm volatile("nop");
+  uint32_t start = Device::sTicks;
+  while ((Device::sTicks - start) < ms) {
+	  __asm volatile("nop");
   }
+//  for (volatile long i=0; i<8852*ms; i++) {
+//      __asm volatile("nop");
+//  }
 }
+
+/* TODO: The delay method 'usleep' is currently dependent on the
+ * optimizations chosen by the compiler. To prevent that and to gain in
+ * precision, we could use the controller cycle counter (Systick). */
 void Ion::usleep(long us) {
   for (volatile long i=0; i<9*us; i++) {
     __asm volatile("nop");
@@ -45,7 +51,7 @@ void Ion::usleep(long us) {
 }
 
 uint32_t Ion::ticks() {
-	return sTicks;
+	return Device::sTicks;
 }
 
 uint32_t Ion::crc32(const uint32_t * data, size_t length) {
