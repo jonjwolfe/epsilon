@@ -22,6 +22,11 @@ extern "C" {
   extern const void * _stack_end;
 }
 
+namespace Ion {
+namespace Device {
+volatile uint32_t sTicks = 0;
+}
+}
 // Public Ion methods
 
 /* TODO: The delay methods 'msleep' and 'usleep' are currently dependent on the
@@ -37,6 +42,10 @@ void Ion::usleep(long us) {
   for (volatile long i=0; i<9*us; i++) {
     __asm volatile("nop");
   }
+}
+
+uint32_t Ion::ticks() {
+	return sTicks;
 }
 
 uint32_t Ion::crc32(const uint32_t * data, size_t length) {
@@ -296,6 +305,13 @@ void initClocks() {
   apb2enr.setSDIOEN(true);
 #endif
   RCC.APB2ENR()->set(apb2enr);
+
+  // Systick
+  //count = 96Mhz/1000ms - 1 = 95999
+  STK.LOAD()->set(95999);
+  STK.VAL()->set(0);
+  STK.CTRL()->setTICKINT(true);
+  STK.CTRL()->setENABLE(true);
 }
 
 void shutdownClocks(bool keepLEDAwake) {
@@ -315,6 +331,12 @@ void shutdownClocks(bool keepLEDAwake) {
   RCC.AHB1ENR()->set(ahb1enr);
 
   RCC.AHB3ENR()->setFSMCEN(false);
+  STK.CTRL()->setTICKINT(false);
+  STK.CTRL()->setENABLE(false);
+}
+
+void systick() {
+	sTicks++;
 }
 
 }

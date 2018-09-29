@@ -116,3 +116,11 @@ void Ion::msleep(long ms) {
     }
   }
 }
+
+uint32_t Ion::ticks() {
+	static auto start = std::chrono::high_resolution_clock::now();
+	auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    //auto tickCount = std::chrono::high_resolution_clock::now();
+    long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    return milliseconds;
+}

@@ -18,6 +18,7 @@
 #include "otg.h"
 #include "sdio.h"
 #include "spi.h"
+#include "stk.h"
 #include "syscfg.h"
 #include "tim.h"
 #include "usart.h"

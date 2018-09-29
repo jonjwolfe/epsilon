@@ -27,6 +27,9 @@ namespace Ion {
 
 void msleep(long ms);
 void usleep(long us);
+// Returns elapsed milliseconds since boot, will reset every 49 days, but the math for durations smaller then 49
+// days will still work
+uint32_t ticks();
 
 const char * serialNumber();
 const char * softwareVersion();

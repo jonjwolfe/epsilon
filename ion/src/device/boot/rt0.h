@@ -3,5 +3,6 @@
 
 void start();
 void abort();
+void systick();
 
 #endif

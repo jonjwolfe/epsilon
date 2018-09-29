@@ -79,3 +79,8 @@ void start() {
 
   abort();
 }
+
+
+void systick() {
+  Ion::Device::systick();
+}
